@@ -15,28 +15,25 @@ import urllib2
 from bs4 import BeautifulSoup
 from datetime import datetime
 
-def download_uik(link,id):
+def download_uik(link,id,i):
     try:
         u = urllib2.urlopen(link)
     except urllib2.URLError, e:
         if hasattr(e, 'reason'):
-            print 'We failed to reach a server.'
+            print 'We failed to reach a server for ' + str(id) + '.' + ' Attempt: ' + str(i)
             print 'Reason: ', e.reason
             error = e.reason[0]
         elif hasattr(e, 'code'):
-            print 'The server couldn\'t fulfill the request.'
-            print 'Error code: ', e.code
+            print 'The server couldn\'t fulfill the request. Error code: ', e.code
             error = e.code
-        f_errors.write(id + "," + link  + "," + str(error) + "\n")
-        success = False
     else:
-        f = open("mgik/" + id + ".html","wb")
+        f = open("mgik_uik/" + id + ".html","wb")
         f.write(u.read())
         f.close()
         print("Listing for " + id + " was downloaded")
-        success = True
+        error = 0
     
-    return success
+    return error
 
 def parse_uik(id):
     f_uik = open("mgik/" + id + ".html",'rb')
@@ -178,9 +175,17 @@ if __name__ == '__main__':
     
     for id in sequence:
         url = link_base + str(id) 
-        success = download_uik(url,str(id))
-        if success == True:
+        
+        for i in range(1,5):
+            error = download_uik(url,str(id),i)
+            i = i + 1
+            if error == 0 or error == 404:
+                break
+        
+        if error == 0:
             parse_uik(str(id))
+        else:
+            f_errors.write(str(id) + "," + url  + "," + str(error) + "\n")
     
     f_output.close()
     f_errors.close()

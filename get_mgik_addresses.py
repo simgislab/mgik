@@ -1,12 +1,11 @@
 # -*- encoding: utf-8 -*-
 # ---------------------------------------------------------------------------
-# get_mgik_uiks.py
+# get_mgik_addresses.py
 # Author: Maxim Dubinin (sim@gis-lab.info)
-# About: Grabber for Mosgorizberkom data on UIKs: http://mosgorizbirkom.ru/web/guest/searchuik Creates data/geodata.
+# About: Grabber for Mosgorizberkom data on addresses and their UIK: http://mosgorizbirkom.ru/web/guest/searchuik
 # Created: 25.08.2013
 # Usage example: 
-#                   grab all:           python get_mgik_uiks.py 
-#                   grab specific uik:  python get_mgik_uiks.py 2632 
+#                   grab all:           python get_mgik_addresses.py
 # ---------------------------------------------------------------------------
 
 import csv
@@ -24,7 +23,7 @@ def download_search(link,id,i):
             print 'Reason: ', e.reason
             error = e.reason[0]
         elif hasattr(e, 'code'):
-            print 'The server couldn\'t fulfill the request. Error code: ', e.code
+            print 'The server couldn\'t fulfill the request for ' + str(id) + '. Error code: ', e.code
             error = e.code
     else:
         f = open("mgik_addr/" + id + ".html","wb")
@@ -45,7 +44,7 @@ def read_link(link):
                 print 'Reason: ', e.reason
                 error = e.reason[0]
             elif hasattr(e, 'code'):
-                print 'The server couldn\'t fulfill the request. Error code: ', e.code
+                print 'The server couldn\'t fulfill the request' + str(id) + '. Error code: ', e.code
                 error = e.code
         else:
             d = u.read()
@@ -143,7 +142,7 @@ if __name__ == '__main__':
     link_base = "http://mosgorizbirkom.ru/precinct/address/"
     link_mgik_base = "http://mosgorizbirkom.ru"
     
-    n = 4000
+    n = 4200
     all_addr = range(1,n)
     if specific_id == 0:
         sequence = all_addr

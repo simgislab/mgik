@@ -36,14 +36,14 @@ def download_uik(link,id,i):
     return error
 
 def parse_uik(id):
-    f_uik = open("mgik/" + id + ".html",'rb')
+    f_uik = open("mgik_uik/" + id + ".html",'rb')
     soup = BeautifulSoup(''.join(f_uik.read()))
     sections = soup.findAll("section", { "class" : "" })
     
     id = list(sections[0].find("p", {"class":"value"}).strings)[0]
     
     addr_o_link = sections[1].find("p", {"class":"label"}).find("a")['href']
-    link_o_q = addr_o_link.split("q=")[1]
+    link_o_q = addr_o_link.split("=")[1]
     if link_o_q[0:2] == "55":
         lat_o = float(link_o_q.split(",")[0])
         lon_o = float(link_o_q.split(",")[1])
@@ -68,7 +68,7 @@ def parse_uik(id):
         place_o = "none"
     
     addr_v_link = sections[2].find("p", {"class":"label"}).find("a")['href']
-    link_v_q = addr_v_link.split("q=")[1]
+    link_v_q = addr_v_link.split("=")[1]
     if link_v_q[0:2] == "55":
         lat_v = float(link_v_q.split(",")[0])
         lon_v = float(link_v_q.split(",")[1])
@@ -144,7 +144,9 @@ if __name__ == '__main__':
         specific_id = args[0]
     
     curdate = datetime.now().strftime("%Y%m%d")
-    link_base = "http://mosgorizbirkom.ru/precinct/precinct/bynumber/?number="
+    #link_base = "http://mosgorizbirkom.ru/precinct/precinct/bynumber/?number=" <-old link
+    link_base = "http://mosgorizbirkom.ru/precinct/precinct/"
+    
     n = 4000
     all_uiks = range(1,n)
     if specific_id == 0:
